@@ -4,11 +4,6 @@ from watchlist_app.models import WatchList, StreamPlatform
 
 # ModelSerializer - zawiera wszystkie metody ktore ma serializer np. get, create itp
 
-class StreamPlatformSerializer(serializers.ModelSerializer):
-     class Meta:
-          model = StreamPlatform
-          fields = "__all__"
-
 class WatchListSerializer(serializers.ModelSerializer):
     # len_name = serializers.SerializerMethodField() #do obliczania dlugosci nazwy filmu oraz innych parametrow mozna
      class Meta:
@@ -19,6 +14,19 @@ class WatchListSerializer(serializers.ModelSerializer):
 
 
 
+class StreamPlatformSerializer(serializers.ModelSerializer):
+    #watchlist = WatchListSerializer(many=True, read_only=True) #nested serializer wyswietla calosc danych
+    #watchlist = serializers.StringRelatedField(many=True) #zwraca name
+    #watchlist = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    watchlist = serializers.HyperlinkedRelatedField( # dodajemy do views serializer context={'request': request}
+        many=True,
+        read_only=True,
+        view_name='movie_detail' #bierzemy z urls
+    )
+
+    class Meta:
+        model = StreamPlatform
+        fields = "__all__"
 
 #(serializers.Serializer)
 # validators
